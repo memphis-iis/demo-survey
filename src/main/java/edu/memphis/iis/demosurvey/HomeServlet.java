@@ -16,22 +16,22 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(value="/home")
 public class HomeServlet extends HttpServlet {
 	private static final long serialVersionUID = 8127525026229258742L;
-	
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException 
+			throws ServletException, IOException
 	{
 		doView(req, resp, "/WEB-INF/view/home.jsp");
 	}
-	
+
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException 
+			throws ServletException, IOException
 	{
 		//TODO: handle post data
 		doRedirect(req, resp, "/home");
 	}
-	
+
 	protected void doView(HttpServletRequest req, HttpServletResponse resp, String view) {
 		try {
 			req.getRequestDispatcher(view).forward(req, resp);
@@ -45,7 +45,7 @@ public class HomeServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 	}
-	
+
 	protected void doRedirect(HttpServletRequest req, HttpServletResponse resp, String url) {
 		resp.setStatus(HttpServletResponse.SC_SEE_OTHER);
         resp.setHeader("Location", url);
