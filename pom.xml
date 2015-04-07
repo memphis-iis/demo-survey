@@ -1,0 +1,116 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <groupId>edu.memphis.iis</groupId>
+    <artifactId>demosurvey</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>war</packaging>
+    
+    <properties>
+        <project.name>demosurvey</project.name>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.jdk.version>1.7</project.jdk.version>
+    </properties>
+    
+    <name>${project.name}</name>
+    <description>Simple demo web survey</description>
+    <url>http://www.memphis.edu/iis/</url>
+
+    <organization>
+        <name>Institute for Intelligent Systems</name>
+        <url>https://github.com/memphis-iis</url>
+    </organization>
+
+    <issueManagement>
+        <url>https://github.com/memphis-iis/demo-survey/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>Apache 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/memphis-iis/demo-survey</url>
+        <connection>scm:git:https://github.com/memphis-iis/demo-survey.git</connection>
+        <developerConnection>scm:git:git@github.com:memphis-iis/demo-survey.git</developerConnection>
+    </scm>
+
+    <developers>
+        <developer>
+            <email>craig.n.kelly@gmail.com</email>
+            <name>Craig Kelly</name>
+            <url>https://github.com/CraigKelly</url>
+            <id>CraigKelly</id>
+        </developer>
+    </developers>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>${project.name}</finalName>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <source>${project.jdk.version}</source>
+                    <target>${project.jdk.version}</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <useTestClasspath>true</useTestClasspath>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.8</version>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.0</version>
+            </plugin>
+        </plugins>
+    </build>
+</project>
