@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 //TODO: logging and error page for actual errors
+//TODO: model
+//TODO: unit testing
+//TODO: readme documentation
 
 @WebServlet(value="/home")
 public class HomeServlet extends HttpServlet {
