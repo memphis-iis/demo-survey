@@ -20,8 +20,12 @@
 
 <!-- TODO: header-->
 
-<div class="container-fluid">    
+<div class="container-fluid">
     <!-- TODO: actual body-->
+
+    <div class="row">
+        TODO <!-- TODO -->
+    </div>
 
     <hr>
 
