@@ -26,6 +26,12 @@ public class HomeServlet extends HttpServlet {
 			throws ServletException, IOException
 	{
 		logger.info("GET {}", currentPath(req));
+
+		//Set any data our view will need to render
+		Survey survey = new Survey(); //Just use default values
+		req.setAttribute("survey", survey);
+
+		//Render the view we want
 		doView(req, resp, "/WEB-INF/view/home.jsp");
 	}
 
