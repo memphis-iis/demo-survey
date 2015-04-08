@@ -10,7 +10,9 @@ TODO: simple requirements
 
 TODO: AWS stuff needed
 
-TODO: quick Maven overview
+TODO: quick overview of a Java web app
+
+TODO: quick Maven overview (and how it works with a web app)
 
 Setting up your development workstation
 ----------------------------------------
