@@ -8,19 +8,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-//TODO: logging and error page for actual errors
-//TODO: model
-//TODO: unit testing
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+//TODO: error page for actual errors
 //TODO: readme documentation
 
 @WebServlet(value="/home")
 public class HomeServlet extends HttpServlet {
 	private static final long serialVersionUID = 8127525026229258742L;
 
+	private static final Logger logger = LoggerFactory.getLogger(HomeServlet.class);
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException
 	{
+		logger.info("GET {}", currentPath(req));
 		doView(req, resp, "/WEB-INF/view/home.jsp");
 	}
 
@@ -28,26 +33,36 @@ public class HomeServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException
 	{
+		logger.info("POST {}", currentPath(req));
 		//TODO: handle post data
 		doRedirect(req, resp, "/home");
 	}
 
 	protected void doView(HttpServletRequest req, HttpServletResponse resp, String view) {
 		try {
+			logger.info("Showing view {} (for {})", currentPath(req), view);
 			req.getRequestDispatcher(view).forward(req, resp);
 		}
 		catch (IOException e) {
-			//TODO: real error handling
-			e.printStackTrace();
+			logger.error("IO Error while processing " + currentPath(req), e);
 		}
 		catch (ServletException e) {
-			//TODO: real error handling
-			e.printStackTrace();
+			logger.error("Servlet Error while processing " + currentPath(req), e);
 		}
 	}
 
 	protected void doRedirect(HttpServletRequest req, HttpServletResponse resp, String url) {
+		logger.info("Redirecting from %s to %s", currentPath(req), url);
 		resp.setStatus(HttpServletResponse.SC_SEE_OTHER);
         resp.setHeader("Location", url);
+	}
+
+	protected String currentPath(HttpServletRequest req) {
+		return String.format(
+			"%s%s%s",
+			Utils.defStr(req.getContextPath()),
+			Utils.defStr(req.getServletPath()),
+			Utils.defStr(req.getPathInfo())
+		);
 	}
 }

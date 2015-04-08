@@ -51,6 +51,7 @@
     </developers>
 
     <dependencies>
+        <!-- We use jUnit 4 for unit testing - note the scope -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -58,6 +59,8 @@
             <scope>test</scope>
         </dependency>
 
+		<!-- We must be run in a container supporting Servlet 3
+		     (like Tomcat 7). Note the scope -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -65,17 +68,29 @@
             <scope>provided</scope>
         </dependency>
 
+		<!-- Use the JSTL tag library for JSP's -->
         <dependency>
             <groupId>jstl</groupId>
             <artifactId>jstl</artifactId>
             <version>1.2</version>
         </dependency>
 
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-        </dependency>
+		<!-- Use logback for our logging (we use are using the classic
+		     module which is similar to log4j). Note that this also gets
+		     us slf4j for free -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.1.3</version>
+		</dependency>
+
+		<!-- We need the Amazon AWS SDK for accessing our data
+		     store (DynamoDB)  -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk</artifactId>
+			<version>1.9.28.1</version>
+		</dependency>
     </dependencies>
 
     <build>

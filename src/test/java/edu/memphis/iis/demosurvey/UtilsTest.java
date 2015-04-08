@@ -29,4 +29,18 @@ public class UtilsTest {
 		assertFalse(Utils.isBlankString(" a"));
 		assertFalse(Utils.isBlankString("a"));
 	}
+
+	@Test
+	public void testStrDef() {
+		assertEquals("a", Utils.defStr("", "a"));
+		assertEquals("a", Utils.defStr(null, "a"));
+		assertEquals("a", Utils.defStr(" ", "a"));
+		assertEquals("a", Utils.defStr("\t", "a"));
+
+		assertEquals("a", Utils.defStr("a", "b"));
+
+		assertEquals("", Utils.defStr(null));
+		assertEquals("", Utils.defStr(""));
+		assertEquals("a", Utils.defStr("a"));
+	}
 }
