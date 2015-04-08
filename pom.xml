@@ -114,6 +114,12 @@
                 <version>2.1</version>
                 <configuration>
                     <useTestClasspath>true</useTestClasspath>
+                    <!-- We set these system properties for testing on a local workstation -->
+                    <systemProperties>
+                        <aws.accessKeyId>TEST</aws.accessKeyId>
+                        <aws.secretKey>TEST</aws.secretKey>
+                        <aws.dynamoEndpoint>http://localhost:8000</aws.dynamoEndpoint>
+                    </systemProperties>
                 </configuration>
             </plugin>
 

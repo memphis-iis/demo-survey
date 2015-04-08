@@ -15,11 +15,17 @@ import org.slf4j.LoggerFactory;
 //TODO: error page for actual errors
 //TODO: readme documentation
 
-@WebServlet(value="/home")
+@WebServlet(value="/home", loadOnStartup=1)
 public class HomeServlet extends HttpServlet {
 	private static final long serialVersionUID = 8127525026229258742L;
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeServlet.class);
+
+	@Override
+	public void init() throws ServletException {
+		super.init();
+		new DataStoreClient().ensureSchema();
+	}
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
