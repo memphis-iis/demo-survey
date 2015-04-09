@@ -17,12 +17,21 @@ TODO: quick Maven overview (and how it works with a web app)
 Setting up your development workstation
 ----------------------------------------
 
-TODO (and don't forget DynamoDB local)
+TODO (and don't forget DynamoDB local with see also for overview below)
 
 Configuration
 --------------
 
-TODO
+TODO (dev/test and production)
+
+Data Overview (including the model and DAO classes)
+-----------------------------------------------------------
+
+TODO: DynamoDB (and see also for local setup above)
+
+TODO: Model class and attributes used
+
+TODO: DAO class and how used 
 
 Design
 --------
