@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="demosurvey">
+<!DOCTYPE xml>
+<project name="demosurvey" 
+    xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/DECORATION/1.6.0 http://maven.apache.org/xsd/decoration-1.6.0.xsd">
+    
     <skin>
         <groupId>org.apache.maven.skins</groupId>
         <artifactId>maven-fluido-skin</artifactId>
