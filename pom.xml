@@ -15,7 +15,7 @@
     
     <name>${project.name}</name>
     <description>Simple demo web survey</description>
-    <url>http://www.memphis.edu/iis/</url>
+    <url>http://memphis-iis.github.io/demo-survey</url>
 
     <organization>
         <name>Institute for Intelligent Systems</name>
