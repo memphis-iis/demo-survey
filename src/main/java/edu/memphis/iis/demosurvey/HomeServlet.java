@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 
 @WebServlet(value="/home", loadOnStartup=1)
-public class HomeServlet extends HttpServlet {
+public class HomeServlet extends BaseServlet {
     private static final long serialVersionUID = 8127525026229258742L;
 
     private static final Logger logger = LoggerFactory.getLogger(HomeServlet.class);
@@ -59,57 +58,17 @@ public class HomeServlet extends HttpServlet {
                 throw new IllegalAccessException("The survey is not valid");
             }
 
+            //TODO: check and don't overwrite previous survey
+
             new DataStoreClient().saveSurvey(survey);
         }
         catch(Exception e) {
+            //Nothing else we can do - show an error page and quit
             doError(req, resp, "There was an issue with your survey responses", e);
+            return;
         }
 
-        //TODO: send to thanks page
-        doRedirect(req, resp, req.getContextPath() + "/home");
-    }
-
-    protected void doView(HttpServletRequest req, HttpServletResponse resp, String view) {
-        try {
-            logger.info("Showing view {} (for {})", currentPath(req), view);
-            req.getRequestDispatcher(view).forward(req, resp);
-        }
-        catch (Exception e) {
-            logger.error("Error while processing " + currentPath(req), e);
-
-        }
-    }
-
-    protected void doRedirect(HttpServletRequest req, HttpServletResponse resp, String url) {
-        logger.info("Redirecting from {} to {}", currentPath(req), url);
-        resp.setStatus(HttpServletResponse.SC_SEE_OTHER);
-        resp.setHeader("Location", url);
-    }
-
-    protected void doError(HttpServletRequest req, HttpServletResponse resp, String mainText, Exception e) {
-        try {
-            req.setAttribute("errorMessage", mainText);
-            req.setAttribute("errorDetails", e.toString());
-            req.getRequestDispatcher("/WEB-INF/view/error.jsp").forward(req, resp);
-        }
-        catch(Exception esub) {
-            logger.error("ERROR rendering error page for previous error", esub);
-        }
-    }
-
-    protected String currentPath(HttpServletRequest req) {
-        return String.format(
-            "%s%s%s",
-            Utils.defStr(req.getContextPath()),
-            Utils.defStr(req.getServletPath()),
-            Utils.defStr(req.getPathInfo())
-        );
-    }
-
-    private String getStrParm(HttpServletRequest request, String name) {
-        String val = request.getParameter(name);
-        if (Utils.isBlankString(val))
-            val = "";
-        return val;
+        //All done - if we're here they should go to the thanks page
+        doRedirect(req, resp, req.getContextPath() + "/thanks");
     }
 }
