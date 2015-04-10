@@ -157,11 +157,11 @@
             </plugin>
             
             <!-- FindBugs plugin used to produce a FindBugs report as part
-                 of our site -->
+                 of our site - note that it is also in the reporting section -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
-                <version>2.5.3</version>
+                <version>3.0.1</version>
             </plugin>
         </plugins>
     </build>
@@ -196,7 +196,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
-                <version>2.5.3</version>
+                <version>3.0.1</version>
             </plugin>
         </plugins>
     </reporting>

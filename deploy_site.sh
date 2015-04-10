@@ -23,7 +23,9 @@ export WT="$SCRIPT_DIR/target/site"
 git checkout master
 
 # Clean target directory and create the site
-mvn clean site
+# Note that we also run package - if we don't, FindBugs and test
+# reports won't be available
+mvn clean package site
 
 # Ensure we have a site
 if [ ! -d "$WT" ]; then
