@@ -68,6 +68,16 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- From the Tomcat7 documentation, we know that JSP API 2.2
+             is the supported version -->
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>javax.servlet.jsp-api</artifactId>
+            <version>2.2.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+
 		<!-- Use the JSTL tag library for JSP's -->
         <dependency>
             <groupId>jstl</groupId>
