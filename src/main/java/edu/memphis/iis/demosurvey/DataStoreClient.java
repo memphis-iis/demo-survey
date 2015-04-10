@@ -20,6 +20,18 @@ import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
  * if you're using something like Spring or Guice, and how large your
  * project is, you might have much more complicated DAO's, you might
  * skip them entirely, or they might be provided by a library.
+ *
+ * Note that we manually create our DynamoDB client, db, and mapper
+ * instances in the constructor. In a large system, we would want to
+ * use an Inversion of Control (aka Dependency Injection) pattern.
+ * Those instances would be injected by some kind of context object that
+ * could vary for unit tests, local workstation debugging, and running
+ * in the actual AWS cloud
+ *
+ * For this simple demo, we are just using some custom logic based on
+ * system properties. See the pom.xml for how we set aws.dynamoEndpoint
+ * for local Tomcat testing AND the AWS credential properties so that
+ * our use of DefaultAWSCredentialsProviderChain works
  */
 public class DataStoreClient {
 	private final static Logger logger = LoggerFactory.getLogger(DataStoreClient.class);

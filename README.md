@@ -3,6 +3,11 @@ demo-survey
 
 Simple Java web survey demo for the AWS platform
 
+TODO: All this should be moved to our Maven site and added to the gh-pages
+      branch of this project. Then this README can just point to the project
+      pages for our GitHub repo.
+
+
 Introduction and Requirements
 ------------------------------
 
