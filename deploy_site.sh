@@ -26,18 +26,18 @@ git checkout master
 mvn clean site
 
 # Ensure we have a site
-if [ ! -d "$MT" ]; then
-    echo "PANIC: Could not find directory $MT"
+if [ ! -d "$WT" ]; then
+    echo "PANIC: Could not find directory $WT"
     exit 1
 fi
 
-# Our actual work: set up HEAD/index to point to gh-pages and $MT, then
+# Our actual work: set up HEAD/index to point to gh-pages and $WT, then
 # add/commit/push our site, then reset everything
 
 git symbolic-ref HEAD refs/heads/gh-pages
-git --work-tree="$MT" reset --mixed --quiet
+git --work-tree="$WT" reset --mixed --quiet
 
-git --work-tree="$MT" add --all
+git --work-tree="$WT" add --all
 git --work-tree="$WT" commit -m "maven site commit $(date) from $(hostname)"
 git push origin gh-pages
 
