@@ -19,6 +19,8 @@ Setting up your development workstation
 
 TODO (and don't forget DynamoDB local with see also for overview below)
 
+TODO: You can examine your DynamoDB local database with sqlite browser
+
 Configuration
 --------------
 
