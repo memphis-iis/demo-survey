@@ -3,9 +3,10 @@ demo-survey
 
 Simple Java web survey demo for the AWS platform
 
-TODO: All this should be moved to our Maven site and added to the gh-pages
-      branch of this project. Then this README can just point to the project
-      pages for our GitHub repo.
+The current GitHub pages site (which we built using Maven's site goal) is at
+http://memphis-iis.github.io/demo-survey
+
+TODO: All this should be moved to our Maven site
 
 
 Introduction and Requirements
