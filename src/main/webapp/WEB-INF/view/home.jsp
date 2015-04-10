@@ -1,50 +1,141 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
+
+<t:basepage>
     
-    <title>IIS Demo Survey</title>
+<jsp:attribute name="pagetitle">Survey Demo</jsp:attribute>
+
+<jsp:attribute name="head">
+    <style>
+        .errormsg {
+            margin-top: 12px;
+        }
+    </style>
+</jsp:attribute>
+
+<jsp:attribute name="scripts">
+<script>
+    function strNotBlank(s) {
+    	return typeof s === "string" && s && $.trim(s);
+    }
     
-    <link rel="icon" type="image/x-icon" href="http://www.memphis.edu/favicon.ico" />
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    $(function(){
+        $("#surveyForm").submit(function(evt){
+        	//Clear any previous error display
+        	$(".errormsg").remove();
+        	$(".form-group").removeClass("has-error");
+        	
+        	//Set up for error display
+        	var errors = [];
+        	var errorCheck = function(groupId, errMsg, booleanTest) {
+        		if (!booleanTest) {
+            		errors.push(errMsg);
+            		$("#"+groupId).addClass("has-error");
+        		}
+        	};
+        	
+        	try {
+        		errorCheck(
+        			"participantGroup", 
+        			"Participant Code is required", 
+        			strNotBlank($("#participantCode").val())
+        		);
+        		errorCheck(
+                    "dogGroup", 
+                    "Dog Breed is required", 
+                    strNotBlank($("#favoriteDogBreed").val())
+                );
+        		
+        		var favNum = $("#favoriteNumber").val();
+        		
+        		errorCheck(
+                    "numberGroup", 
+                    "Favorite Number is required", 
+                    strNotBlank(favNum)
+                );
+        		errorCheck(
+                    "numberGroup", 
+                    "Favorite Number must be a Number", 
+                    !isNaN(parseInt(favNum))
+                );
+        	}
+        	catch(e) {
+        		//Whoops!
+        		error.push("Unknown Error: " + e.toString());
+        	}
+        	
+        	if (errors.length) {
+        		//Error - submission can't go forward
+        		evt.preventDefault();
+        		
+        		var alert = $('<div class="alert alert-danger errormsg" role="alert"></div>');
+        		alert.append($("<strong>Your survey has some problems</strong>"));
+        		
+        		$.each(errors, function(index, value) {
+        			alert.append($('<div></div>')
+        				.append($('<span class="glyphicon glyphicon-thumbs-down"></span>'))
+        				.append($('<span></span>').text(" " + value))
+        			);
+        		});
+        		
+        		$("#surveyButtonContainer").append(alert);
+        	}
+        });
+    });
+</script>
+</jsp:attribute>
+
+<jsp:body>
     
-    <!-- Our styles -->
-    <link rel="stylesheet" type="text/css" href="css/annotator.css">
-</head>
+<div class="row">
+    <div class="col-md-12">
+        <form class="form-horizontal" id="surveyForm" method="post">
+            
+            <div class="form-group" id="participantGroup">
+                <label for="participantCode" class="col-md-2 control-label">Participant Code</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" placeholder="Your unique code" 
+                        id="participantCode" value="${survey.participantCode}" >
+                </div>
+            </div>
 
-<body>
+            <div class="form-group" id="dogGroup">
+                <label for="favoriteDogBreed" class="col-md-2 control-label">Favorite Dog Breed</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" placeholder="Your Favorite Dog Breed" 
+                        id="favoriteDogBreed" value="${survey.favoriteDogBreed}" >
+                </div>
+            </div>
+            
+            <div class="form-group" id="catGroup">
+                <label for="catLover" class="col-md-2 control-label">Cat Lover</label>
+                <div class="col-md-4">
+                    <div class="checkbox">
+                        <label><input id="catLover" type="checkbox"> Yes! I love cats</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group" id="numberGroup">
+                <label for="favoriteNumber" class="col-md-2 control-label">Favorite Number</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" placeholder="Your Favorite INTEGER" 
+                        id="favoriteNumber" value="" >
+                </div>
+            </div>
 
-<!-- TODO: header-->
-
-<div class="container-fluid">
-    <!-- TODO: actual body-->
-
-    <div class="row">
-        TODO <!-- TODO -->
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-4" id="surveyButtonContainer">
+                   <button type="submit" class="btn btn-primary">Record My Answers</button>
+                </div>
+            </div>
+        </form>
     </div>
+</div>
+    
+</jsp:body>
 
-    <hr>
-
-    <!-- FOOTER, ENDMATTER, and STATUS -->
-    <footer>
-        <img style="float:left;" class="img-responsive img-rounder" src="http://www.memphis.edu/shared/shared_rootsite/images/brandnew.jpg">
-        <p style="float:right;"><small>Institute for Intelligent Systems, 2014</small></p>
-        <br style="clear:both">
-    </footer>
-</div> <!-- /container --> 
-
-
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
- 
-<!-- bootstrap -->
-<script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-
-
-</body>
-</html>
+</t:basepage>
