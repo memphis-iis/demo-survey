@@ -1,8 +1,6 @@
 package edu.memphis.iis.demosurvey;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -10,13 +8,11 @@ import org.slf4j.LoggerFactory;
 
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
-import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
-import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
-import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
-import com.amazonaws.services.dynamodbv2.model.KeyType;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
+
 
 /**
  * This is a very simple demonstration of an interface to a data store,
@@ -28,9 +24,16 @@ import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 public class DataStoreClient {
 	private final static Logger logger = LoggerFactory.getLogger(DataStoreClient.class);
 
-	protected AmazonDynamoDBClient client;
-	protected DynamoDB db;
+	/** Created and managed by constructor */
+	private AmazonDynamoDBClient client;
 
+	/** Created and managed by helper function - shouldn't be used directly in code */
+	private DynamoDB db;
+
+	/** Created and managed by helper function - shouldn't be used directly in code */
+	private DynamoDBMapper mapper;
+
+	/** Default constructor */
 	public DataStoreClient() {
 		// Note our lack of credentials - this is because in Elastic Beanstalk
 		// we will be specifying AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
@@ -40,10 +43,37 @@ public class DataStoreClient {
 		String endpoint = System.getProperty("aws.dynamoEndpoint");
 		if (!Utils.isBlankString(endpoint)) {
 			//No env vars for security - we must be in testing
-			logger.info("Using specified endpoint " + endpoint);
+			logger.info("Using specified endpoint {}", endpoint);
 			client.setEndpoint(endpoint);
 		}
-		db = new DynamoDB(client);
+
+		//These will be lazy-init'ed by our helper functions
+		db = null;
+		mapper = null;
+	}
+
+	/**
+	 * Simple helper to lazy-create the (low-level) Dynamo DB instance for
+	 * our current client.
+	 * @return valid instance of Dynamo DB
+	 */
+	protected DynamoDB getDB() {
+		if (db == null) {
+			db = new DynamoDB(client);
+		}
+		return db;
+	}
+
+	/**
+	 * Simple helper to lazy-create the (high-level) Dynamo DB mapper instance
+	 * for our current client.
+	 * @return valid instance of Dynamo DB Mapper
+	 */
+	protected DynamoDBMapper getMapper() {
+		if (mapper == null) {
+			mapper = new DynamoDBMapper(client);
+		}
+		return mapper;
 	}
 
 	/**
@@ -51,18 +81,13 @@ public class DataStoreClient {
 	 * This example pattern creates a set of tables needed, removes
 	 * any previously created tables from that set, and then creates
 	 * any tables left over.
-	 *
-	 * <p>Note that for a larger project, you would probably want something
-	 * that could infer table attributes from a model class or vice versa.
-	 * Currently we need to make changes to the survey entity here AND in the
-	 * the Survey model class
 	 */
 	public void ensureSchema() {
 		Set<String> tablesNeeded = new HashSet<>();
 		tablesNeeded.add("Survey");
 
-		for(Table t: db.listTables()) {
-			String tableName = t.getDescription().getTableName();
+		for(Table t: getDB().listTables()) {
+			String tableName = t.getTableName();
 			logger.info("Table Found: " + tableName);
 			tablesNeeded.remove(tableName);
 		}
@@ -71,23 +96,12 @@ public class DataStoreClient {
 		if (tablesNeeded.contains("Survey")) {
 			logger.info("CREATING Table: Survey");
 
-			List<AttributeDefinition> attrDefs = new ArrayList<>();
-			attrDefs.add(new AttributeDefinition()
-				.withAttributeName("participantCode")
-				.withAttributeType("S"));
-
-			List<KeySchemaElement> keySchema = new ArrayList<>();
-			keySchema.add(new KeySchemaElement()
-				.withAttributeName("participantCode")
-				.withKeyType(KeyType.HASH));
-
-			db.createTable(new CreateTableRequest()
-				.withTableName("Survey")
-				.withKeySchema(keySchema)
-				.withAttributeDefinitions(attrDefs)
+			db.createTable(getMapper()
+				.generateCreateTableRequest(Survey.class)
 				.withProvisionedThroughput(new ProvisionedThroughput()
 					.withReadCapacityUnits(2L)
-					.withWriteCapacityUnits(5L))
+					.withWriteCapacityUnits(5L)
+				)
 			);
 		}
 	}
@@ -97,6 +111,9 @@ public class DataStoreClient {
 	 * @param survey the object to save
 	 */
 	public void saveSurvey(Survey survey) {
-		//TODO
+		if (survey == null || !survey.isValid()) {
+			throw new IllegalArgumentException("Invalid survey cannot be saved");
+		}
+		getMapper().save(survey);
 	}
 }

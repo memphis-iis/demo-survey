@@ -1,8 +1,14 @@
 package edu.memphis.iis.demosurvey;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+
 /**
  * Our very simple model class
  */
+@DynamoDBTable(tableName="Survey")
 public class Survey {
 	protected String participantCode;
 	protected String favoriteDogBreed;
@@ -18,6 +24,7 @@ public class Survey {
 	 * data store
 	 * @return true if valid
 	 */
+	@DynamoDBIgnore // We don't want this stored in the DB
 	public boolean isValid() {
 		if (Utils.isBlankString(participantCode)) {
 			return false;
@@ -25,6 +32,7 @@ public class Survey {
 		return true;
 	}
 
+	@DynamoDBHashKey(attributeName="participantCode")
 	public String getParticipantCode() {
 		return participantCode;
 	}
@@ -32,6 +40,7 @@ public class Survey {
 		this.participantCode = participantCode;
 	}
 
+	@DynamoDBAttribute(attributeName="favoriteDogBreed")
 	public String getFavoriteDogBreed() {
 		return favoriteDogBreed;
 	}
@@ -39,6 +48,7 @@ public class Survey {
 		this.favoriteDogBreed = favoriteDogBreed;
 	}
 
+	@DynamoDBAttribute(attributeName="catLover")
 	public boolean isCatLover() {
 		return catLover;
 	}
@@ -46,6 +56,7 @@ public class Survey {
 		this.catLover = catLover;
 	}
 
+	@DynamoDBAttribute(attributeName="favoriteNumber")
 	public int getFavoriteNumber() {
 		return favoriteNumber;
 	}
