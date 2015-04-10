@@ -12,8 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-//TODO: error page for actual errors
+//TODO: test error page
+//TODO: need thank-you page
+//TODO: need data view page
 //TODO: readme documentation
+
 
 @WebServlet(value="/home", loadOnStartup=1)
 public class HomeServlet extends HttpServlet {
@@ -47,7 +50,7 @@ public class HomeServlet extends HttpServlet {
 	{
 		logger.info("POST {}", currentPath(req));
 		//TODO: handle post data
-		doRedirect(req, resp, "/home");
+		doRedirect(req, resp, req.getContextPath() + "/home");
 	}
 
 	protected void doView(HttpServletRequest req, HttpServletResponse resp, String view) {
@@ -55,18 +58,27 @@ public class HomeServlet extends HttpServlet {
 			logger.info("Showing view {} (for {})", currentPath(req), view);
 			req.getRequestDispatcher(view).forward(req, resp);
 		}
-		catch (IOException e) {
-			logger.error("IO Error while processing " + currentPath(req), e);
-		}
-		catch (ServletException e) {
-			logger.error("Servlet Error while processing " + currentPath(req), e);
+		catch (Exception e) {
+			logger.error("Error while processing " + currentPath(req), e);
+
 		}
 	}
 
 	protected void doRedirect(HttpServletRequest req, HttpServletResponse resp, String url) {
-		logger.info("Redirecting from %s to %s", currentPath(req), url);
+		logger.info("Redirecting from {} to {}", currentPath(req), url);
 		resp.setStatus(HttpServletResponse.SC_SEE_OTHER);
         resp.setHeader("Location", url);
+	}
+
+	protected void doError(HttpServletRequest req, HttpServletResponse resp, String mainText, Exception e) {
+		try {
+			req.setAttribute("errorMessage", mainText);
+			req.setAttribute("errorDetails", e.toString());
+			req.getRequestDispatcher("/WEB-INF/view/error.jsp").forward(req, resp);
+		}
+		catch(Exception esub) {
+			logger.error("ERROR rendering error page for previous error", esub);
+		}
 	}
 
 	protected String currentPath(HttpServletRequest req) {
