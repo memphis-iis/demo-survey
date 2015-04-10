@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//TODO: need thank-you page
 //TODO: need data view page
 //TODO: readme documentation
 
