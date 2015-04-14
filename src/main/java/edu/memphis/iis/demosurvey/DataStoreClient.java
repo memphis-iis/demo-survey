@@ -1,6 +1,8 @@
 package edu.memphis.iis.demosurvey;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -9,8 +11,11 @@ import org.slf4j.LoggerFactory;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 
 
@@ -121,11 +126,28 @@ public class DataStoreClient {
 	/**
 	 * Persist the given survey
 	 * @param survey the object to save
+	 * @param allowOverwrite if true, a previous record will overwritten
 	 */
-	public void saveSurvey(Survey survey) {
+	public void saveSurvey(Survey survey, boolean allowOverwrite) {
 		if (survey == null || !survey.isValid()) {
 			throw new IllegalArgumentException("Invalid survey cannot be saved");
 		}
-		getMapper().save(survey);
+
+		if (allowOverwrite) {
+		    //Just fire a save and completely overwrite the original record
+		    getMapper().save(
+		        survey,
+		        new DynamoDBMapperConfig(DynamoDBMapperConfig.SaveBehavior.CLOBBER)
+		    );
+		}
+		else {
+		    //Throw an exception if the record already exists
+		    Map<String, ExpectedAttributeValue> expected = new HashMap<>();
+		    expected.put("participantCode", new ExpectedAttributeValue(false));
+		    getMapper().save(
+	            survey,
+	            new DynamoDBSaveExpression().withExpected(expected)
+	        );
+		}
 	}
 }

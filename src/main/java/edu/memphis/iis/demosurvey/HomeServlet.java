@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
+
 //TODO: need data view page
 //TODO: readme documentation
 
@@ -57,9 +59,13 @@ public class HomeServlet extends BaseServlet {
                 throw new IllegalAccessException("The survey is not valid");
             }
 
-            //TODO: check and don't overwrite previous survey
-
-            new DataStoreClient().saveSurvey(survey);
+            //Note that we don't allow overwrites - only one response per participant code
+            new DataStoreClient().saveSurvey(survey, false);
+        }
+        catch(ConditionalCheckFailedException e) {
+            //Caught a duplicate
+            doError(req, resp, "That response code has already been used", null);
+            return;
         }
         catch(Exception e) {
             //Nothing else we can do - show an error page and quit
