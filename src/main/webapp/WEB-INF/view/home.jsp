@@ -21,7 +21,6 @@
         return typeof s === "string" && s && $.trim(s);
     }
 
-
     $(function(){
         //We specify ID's for all our form elements, but we should also specify a name
         $("input").each(function(idx, ele) {

@@ -2,6 +2,7 @@ package edu.memphis.iis.demosurvey;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,6 +14,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
@@ -125,6 +127,7 @@ public class DataStoreClient {
 
 	/**
 	 * Persist the given survey
+	 *
 	 * @param survey the object to save
 	 * @param allowOverwrite if true, a previous record will overwritten
 	 */
@@ -149,5 +152,21 @@ public class DataStoreClient {
 	            new DynamoDBSaveExpression().withExpected(expected)
 	        );
 		}
+	}
+
+	/**
+	 * Return a list of all surveys. Note that the underlying implementation
+	 * of the list is unspecified. Currently we use the AWS SDK's lazy-loading
+	 * list (which returns a page at a time). There may be delays while iterating
+	 * over this list, AND this may change in the future
+	 *
+	 * @return a List<> of Survey instances, or a List<> of size 0 if no
+	 *         Survey's are found
+	 */
+	public List<Survey> findSurveys() {
+	    return getMapper().scan(
+            Survey.class,
+            new DynamoDBScanExpression()
+        );
 	}
 }

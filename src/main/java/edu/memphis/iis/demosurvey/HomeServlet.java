@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 
-//TODO: need data view page
 //TODO: readme documentation
 
 
