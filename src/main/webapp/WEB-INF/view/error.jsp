@@ -19,9 +19,9 @@
                 <h2 class="panel-title">An Error Occurred!</h2>
             </div>
 	        <div class="panel-body">
-	            <h3>${errorMessage}</h3>
+	            <h3 class="alert alert-danger">${errorMessage}</h3>
 	            <hr>
-                <pre>${errorDetails}</pre>
+                <div class="alert alert-info">${errorDetails}</div>
 	        </div>
         </div>
 

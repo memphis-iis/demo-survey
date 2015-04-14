@@ -36,12 +36,15 @@ public class BaseServlet extends HttpServlet {
     protected void doError(HttpServletRequest req, HttpServletResponse resp, String mainText, Exception e) {
         try {
             req.setAttribute("errorMessage", mainText);
-            req.setAttribute("errorDetails", e.toString());
+            req.setAttribute("errorDetails", e != null ? e.getMessage() : "No other details available");
             req.getRequestDispatcher("/WEB-INF/view/error.jsp").forward(req, resp);
         }
         catch(Exception esub) {
             logger.error("ERROR rendering error page for previous error", esub);
         }
+    }
+    protected void doError(HttpServletRequest req, HttpServletResponse resp, String mainText) {
+        doError(req, resp, mainText, null);
     }
 
     protected String currentPath(HttpServletRequest req) {
