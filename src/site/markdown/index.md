@@ -83,9 +83,50 @@ result, if we are deployed on a server at `www.somewhere.com` the URL
 A Quick Introduction to Maven
 ------------------------------
 
-TODO: quick overview of a Java web app
+This is not an extensive introduction to Maven. In fact, you should already
+by somewhat familiar with Maven (or at least have read some introductory
+material); however, in the interest of completeness, a brief overview of
+Maven will be given.
 
-TODO: quick Maven overview (and how it works with a web app)
+Maven is a build tool with extensive support for transitive dependencies.
+For instance, if you declare a dependence on library A, which requireds
+both libraries B and C, each of which required D, then Maven will
+automatically download all four libraries (A, B, C, and D) for your project.
+You may specify when you "need" your dependencies (only to compile, only
+for testing, etc).
+
+**Important!** If you take nothing else away from this section, remember
+dependency management. It's important, but even if you disagree, please
+keep in mind that the Java community has been using automated dependency
+management for years. As a result, few projects worry about how difficult
+it will be for you to find all the necessary JAR's to run their code. They
+assume that a dependency manager will do this for you.
+
+Maven is based around the concept of a "Project Object Model", abbreviated
+by POM. You describe a project with a POM in an XML file named pom.xml
+and let Maven take care of taks like downloading your dependencies, building
+your WAR (or JAR) file, running your unit tests, etc. For instance, just
+running `mvn package` will compile, test, and package your code. In our
+project, that means that you'll be able to find `demosurvey.war` in the
+`target` directory.
+
+Maven is based on convention over configuration, so you should follow the
+Maven conventions. A few to keep in mind:
+
+  * Your code, resource files, etc will live in the `src` directory
+  * Everything Maven builds for you will end up in the `target` directory.
+    DO **NOT** add the `target` directory to source code control (you'll
+    notice that it is in the `.gitignore` file in our directory).
+  * Your Java code goes in `src/main/java`
+  * Any resource files (like configuration files you bundled in your WAR)
+    go in `src/main/resources`
+  * The "special" contents of your WAR (like JSP's and your WEB-INF directory)
+    go in `src/main/webapp`
+  * You Java test code goes in `src/test/java`
+  * Any resources you need to run unit tests go in `src/test/resources`
+  * If you're using the Maven site command to build an informational site
+    for your project, the site.xml file and any extra content go in
+    `src/site` 
 
 Setting up your development workstation
 ----------------------------------------
