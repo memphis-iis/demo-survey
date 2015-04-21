@@ -204,22 +204,108 @@
         <div id="bodyColumn"  class="span9" >
                                   
             <h1>demo-survey</h1>
-<p>Hello from a Linux host Part Deux!</p>
 <p>Simple Java web survey demo for the AWS platform</p>
 <p>Be sure to look in <tt>Project Reports</tt> below for the JavaDocs!</p>
+<p>TODO: Links to meep-meep documents</p>
+<p>TODO: Break into separate documents</p>
 <div class="section">
 <h2>Introduction and Requirements<a name="Introduction_and_Requirements"></a></h2>
-<p>TODO: simple requirements</p>
-<p>TODO: AWS stuff needed</p>
-<p>TODO: quick overview of a Java web app</p>
-<p>TODO: quick Maven overview (and how it works with a web app)</p></div>
+<p>This is a sample project meant to demonstrate how you might create a small data collection website. In this case it&#x2019;s a very simple survey. No one logs in, everyone supplies their own participant code, and the questions are silly. We only have a few high-level requirements:</p>
+
+<ol style="list-style-type: decimal">
+  
+<li>This project will be in Java, since that&#x2019;s a very common development  language around here</li>
+  
+<li>We should save survey results</li>
+  
+<li>We want our code to understand records with keys in some sense</li>
+  
+<li>We want to run this application in the &#x201c;cloud&#x201d; at Amazon Web Services (AWS)</li>
+</ol>
+<p>We will be making some assumptions about your development workstation</p>
+
+<ul>
+  
+<li>You have Git installed (which includes Git Bash on Windows)</li>
+  
+<li>You have the Java 7 (or later) <b>JDK</b> installed</li>
+  
+<li>You have Apache Maven installed.</li>
+  
+<li>You have a functional AWS account to use for deployment (at least for testing). If you have an account with Amazon, then you can use it for AWS.</li>
+  
+<li>You have installed the &#x201c;local&#x201d; version of Amazon DynamoDB. See below for more instructions.</li>
+</ul>
+<p>All the major Linux distributions have packages for a Java JDK and Maven. You should be able to install Maven via homebrew on a Mac. On a Windows machine, you&#x2019;ll probably need to download and install them yourself. They can be found. Your best bet is probably to Google for them, but as of this writing, they could downloaded here:</p>
+
+<ul>
+  
+<li><a class="externalLink" href="http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html">Java 7 JDK</a></li>
+  
+<li><a class="externalLink" href="https://maven.apache.org/download.cgi">Maven</a></li>
+</ul>
+<p>If you use the manual downloads, you&#x2019;ll also want to make sure that the bin directories from both the JDK and the Maven distribution are in your PATH.</p></div>
+<div class="section">
+<h2>A Brief Overview of Java Web Applications<a name="A_Brief_Overview_of_Java_Web_Applications"></a></h2>
+<p>It is assumed that you already understand Java programming and how Java web applications work. However, just in case that&#x2019;s not true, let&#x2019;s go over how a Java application is put together.</p>
+<p>A Java web application is compiled into a WAR file, which is just a special kind of JAR. It represents a web application that will be executed by a Java web server. This server can be a simple Servlet/JSP container (like Tomcat or Jetty), or it can be a full-fledged application server (like Wild Fly or GlassFish). In our case it will be Tomcat.</p>
+<p>Each WAR file is loaded as a web application (or context) and responds to HTTP requests using Servlets. Servlets are generally classes that implement a special interface. Additionally, Java ServerPages (JSP&#x2019;s) can use a combination of HTML, Java code, and special &#x201c;tags&#x201d; to create HTML output.</p>
+<p>The WAR file includes (amoung other things) any JSP&#x2019;s and other content to be served to the user and a special directory named WEB-INF. Inside WEB-INF is a file named web.xml that defined various parameters for the web application, a classes folder with your compiled Java classes, and a lib folder with any JAR&#x2019;s that your web application will need. You may include your own file in WEB-INF, but remember that they will not be immediately accessible to your users. You must write code of some kind to expose any resources in WEB-INF that your users should be able to download.</p>
+<p>In general, a Java web server maps each &#x201c;directory&#x201d; at the root of the URL to a WAR file, and the WAR file is responsible for handling URL&#x2019;s in that namespace. For instance, this application will generate a WAR file named demosurvey.WAR. It includes a Servlet named HomeServlet (see edu.memphis.iis.demosurvey.HomeServlet) that is mapped to <tt>/home</tt>. As a result, if we are deployed on a server at <tt>www.somewhere.com</tt> the URL <tt>http://www.somewhere.com/demosurvey/home</tt> will map to our servlet. </p></div>
+<div class="section">
+<h2>A Quick Introduction to Maven<a name="A_Quick_Introduction_to_Maven"></a></h2>
+<p>This is not an extensive introduction to Maven. In fact, you should already by somewhat familiar with Maven (or at least have read some introductory material); however, in the interest of completeness, a brief overview of Maven will be given.</p>
+<p>Maven is a build tool with extensive support for transitive dependencies. For instance, if you declare a dependence on library A, which requireds both libraries B and C, each of which required D, then Maven will automatically download all four libraries (A, B, C, and D) for your project. You may specify when you &#x201c;need&#x201d; your dependencies (only to compile, only for testing, etc).</p>
+<p><b>Important!</b> If you take nothing else away from this section, remember dependency management. It&#x2019;s important, but even if you disagree, please keep in mind that the Java community has been using automated dependency management for years. As a result, few projects worry about how difficult it will be for you to find all the necessary JAR&#x2019;s to run their code. They assume that a dependency manager will do this for you.</p>
+<p>Maven is based around the concept of a &#x201c;Project Object Model&#x201d;, abbreviated by POM. You describe a project with a POM in an XML file named pom.xml and let Maven take care of taks like downloading your dependencies, building your WAR (or JAR) file, running your unit tests, etc. For instance, just running <tt>mvn package</tt> will compile, test, and package your code. In our project, that means that you&#x2019;ll be able to find <tt>demosurvey.war</tt> in the <tt>target</tt> directory.</p>
+<p>Maven is based on convention over configuration, so you should follow the Maven conventions. A few to keep in mind:</p>
+
+<ul>
+  
+<li>Your code, resource files, etc will live in the <tt>src</tt> directory</li>
+  
+<li>Everything Maven builds for you will end up in the <tt>target</tt> directory. DO <b>NOT</b> add the <tt>target</tt> directory to source code control (you&#x2019;ll notice that it is in the <tt>.gitignore</tt> file in our directory).</li>
+  
+<li>Your Java code goes in <tt>src/main/java</tt></li>
+  
+<li>Any resource files (like configuration files you bundled in your WAR) go in <tt>src/main/resources</tt></li>
+  
+<li>The &#x201c;special&#x201d; contents of your WAR (like JSP&#x2019;s and your WEB-INF directory) go in <tt>src/main/webapp</tt></li>
+  
+<li>You Java test code goes in <tt>src/test/java</tt></li>
+  
+<li>Any resources you need to run unit tests go in <tt>src/test/resources</tt></li>
+  
+<li>If you&#x2019;re using the Maven site command to build an informational site for your project, the site.xml file and any extra content go in <tt>src/site</tt></li>
+</ul>
+<p>Maven also has a large plugin ecosystem for adding all kinds of functionality to your project. For instance, this project uses the Tomcat plugin. As a result, you can run this project in a special test Tomcat instance on your workstation just by running <tt>mvn tomcat7:run</tt>. However, please &#x201c;Setting Up Your Development Workstation&#x201d; below for real details. </p></div>
 <div class="section">
 <h2>Setting up your development workstation<a name="Setting_up_your_development_workstation"></a></h2>
-<p>TODO (and don&#x2019;t forget DynamoDB local with see also for overview below)</p>
-<p>TODO: You can examine your DynamoDB local database with sqlite browser</p></div>
+<p>As mentioned above you should have Git, a Java JDK (at least version 7), and Maven installed. You will probably want a nice IDE for development like Eclipse or NetBeans. A brief description of setting up an Eclipse development environment will be given, but all the &#x201c;raw&#x201d; Maven commands will be our focus.</p>
+<p>In addition to the standard development tools listed above, you&#x2019;ll also want to be able to test the application locally when you make changes. Otherwise you would need to deploy your application to the Amazon cloud every time you wanted to test. We use the Maven Tomcat plugin for hosting our web application, but the application needs a data source. In the Amazon cloud, data is stored in DynamoDB. Luckily Amazon provides &#x201c;local&#x201d; version for testing that emulates enough real functionality for testing. To setup &#x201c;DynamoDB Local&#x201d; you can just follow the directions at <a class="externalLink" href="http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Tools.DynamoDBLocal.html">http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Tools.DynamoDBLocal.html</a></p>
+<p>Basically, you just need to:</p>
+
+<ul>
+  
+<li>Download the .zip or .tar.gz archive</li>
+  
+<li>Extract everything somewhere appropriate</li>
+  
+<li>Run the server whenever you are testing. Below this directory will be referred to as the &#x201c;DynamoDB directory&#x201d;</li>
+</ul>
+<p>That last step is the doozy: if you aren&#x2019;t running the local DynamoDB server, the web application will have errors when your are running in on your local workstation. You can still write code, execute the unit tests, push your changes to a repository, etc, but you won&#x2019;t be able to actually run the entire web application if you aren&#x2019;t running DynamoDB Local.</p>
+<p>Unfortunately there isn&#x2019;t a simple script file (BAT file for Windows people) in the distributed files for running the server. You can create your own and just add the line: <tt>java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar</tt>. Then when you want to run the server, you can open your terminal (command prompt for Windows people), <tt>cd</tt> to your DynamoDB directory, and run your script file.</p>
+<p>You might also want to download a tool like the SQLite Browser available at <a class="externalLink" href="http://sqlitebrowser.org/">http://sqlitebrowser.org/</a>. DynamoDB Local uses SQLite to store data, so while you are testing you can just use this handy browser to view the data in the file <tt>TEST_us-east-1.db</tt> in your DynamoDB directory.</p>
+<p>Assuming that you have already above setup and your DynamoDB Local is running, you&#x2019;re ready to get the latest code, build the web application, and test. To do all this you only need three commands:</p>
+
+<div class="source">
+<pre>$ git clone https://github.com/memphis-iis/demo-survey.git
+$ cd demo-survey
+$ mvn tomcat7:run
+</pre></div></div>
 <div class="section">
 <h2>Configuration<a name="Configuration"></a></h2>
-<p>TODO (dev/test and production)</p></div>
+<p>TODO: (dev/test and production) TODO: IoC and why not used</p></div>
 <div class="section">
 <h2>Data Overview (including the model and DAO classes)<a name="Data_Overview_including_the_model_and_DAO_classes"></a></h2>
 <p>TODO: DynamoDB (and see also for local setup above)</p>
@@ -233,10 +319,11 @@
 <p>TODO: basic logging, logback, and Beanstalk&#x2019;s change to Tomcat</p></div>
 <div class="section">
 <h2>Testing<a name="Testing"></a></h2>
-<p>TODO</p></div>
+<p>TODO: unit testing</p></div>
 <div class="section">
 <h2>Deploying<a name="Deploying"></a></h2>
-<p>TODO: running for &#x201c;real&#x201d; on AWS</p></div>
+<p>TODO: running for &#x201c;real&#x201d; on AWS: IAM role, DynamoDB role add, deploy application, settings to consider</p>
+<p>TODO: AWS step-by-step video</p></div>
                   </div>
             </div>
           </div>
