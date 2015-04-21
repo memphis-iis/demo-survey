@@ -128,18 +128,65 @@ Maven conventions. A few to keep in mind:
     for your project, the site.xml file and any extra content go in
     `src/site` 
 
+Maven also has a large plugin ecosystem for adding all kinds of functionality
+to your project. For instance, this project uses the Tomcat plugin. As a
+result, you can run this project in a special test Tomcat instance on your
+workstation just by running `mvn tomcat7:run`. However, please "Setting
+Up Your Development Workstation" below for real details.    
+
 Setting up your development workstation
 ----------------------------------------
 
-TODO: Java 7 JDK and Maven
+As mentioned above you should have Git, a Java JDK (at least version 7), and
+Maven installed. You will probably want a nice IDE for development like Eclipse
+or NetBeans. A brief description of setting up an Eclipse development environment
+will be given, but all the "raw" Maven commands will be our focus.
 
-TODO: Eclipse and Maven builds
+In addition to the standard development tools listed above, you'll also want to
+be able to test the application locally when you make changes. Otherwise you
+would need to deploy your application to the Amazon cloud every time you wanted
+to test. We use the Maven Tomcat plugin for hosting our web application, but the
+application needs a data source. In the Amazon cloud, data is stored in DynamoDB.
+Luckily Amazon provides "local" version for testing that emulates enough real
+functionality for testing. To setup "DynamoDB Local" you can just follow the
+directions at http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Tools.DynamoDBLocal.html
 
-TODO: Windows and Git Bash
+Basically, you just need to:
 
-TODO: (and don't forget DynamoDB local with see also for overview below)
+  * Download the .zip or .tar.gz archive
+  * Extract everything somewhere appropriate
+  * Run the server whenever you are testing. Below this directory will be
+    referred to as the "DynamoDB directory"
 
-TODO: You can examine your DynamoDB local database with sqlite browser
+That last step is the doozy: if you aren't running the local DynamoDB server,
+the web application will have errors when your are running in on your local
+workstation. You can still write code, execute the unit tests, push your
+changes to a repository, etc, but you won't be able to actually run the
+entire web application if you aren't running DynamoDB Local.
+
+Unfortunately there isn't a simple script file (BAT file for Windows people) in
+the distributed files for running the server. You can create your own and just
+add the line:
+`java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar`.
+Then when you want to run the server, you can open your terminal (command
+prompt for Windows people), `cd` to your DynamoDB directory, and run
+your script file.
+
+You might also want to download a tool like the SQLite Browser available
+at http://sqlitebrowser.org/. DynamoDB Local uses SQLite to store data,
+so while you are testing you can just use this handy browser to view the
+data in the file `TEST_us-east-1.db` in your DynamoDB directory.
+
+Assuming that you have already above setup and your DynamoDB Local is running,
+you're ready to get the latest code, build the web application, and test.
+To do all this you only need three commands:
+
+```
+$ git clone https://github.com/memphis-iis/demo-survey.git
+$ cd demo-survey
+$ mvn tomcat7:run
+```
+
 
 Configuration
 --------------
