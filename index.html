@@ -251,7 +251,7 @@
 <p>A Java web application is compiled into a WAR file, which is just a special kind of JAR. It represents a web application that will be executed by a Java web server. This server can be a simple Servlet/JSP container (like Tomcat or Jetty), or it can be a full-fledged application server (like Wild Fly or GlassFish). In our case it will be Tomcat.</p>
 <p>Each WAR file is loaded as a web application (or context) and responds to HTTP requests using Servlets. Servlets are generally classes that implement a special interface. Additionally, Java ServerPages (JSP&#x2019;s) can use a combination of HTML, Java code, and special &#x201c;tags&#x201d; to create HTML output.</p>
 <p>The WAR file includes (amoung other things) any JSP&#x2019;s and other content to be served to the user and a special directory named WEB-INF. Inside WEB-INF is a file named web.xml that defined various parameters for the web application, a classes folder with your compiled Java classes, and a lib folder with any JAR&#x2019;s that your web application will need. You may include your own file in WEB-INF, but remember that they will not be immediately accessible to your users. You must write code of some kind to expose any resources in WEB-INF that your users should be able to download.</p>
-<p>In general, a Java web server maps each &#x201c;directory&#x201d; at the root of the URL to a WAR file, and the WAR file is responsible for handling URL&#x2019;s in that namespace. For instance, this application will generate a WAR file named demosurvey.WAR. It includes a Servlet named HomeServlet (see edu.memphis.iis.demosurvey.HomeServlet) that is mapped to <tt>/home</tt>. As a result, if we are deployed on a server at <tt>www.somewhere.com</tt> the URL <tt>http://www.somewhere.com/demosurvey/home</tt> will map to our servlet. </p></div>
+<p>In general, a Java web server maps each &#x201c;directory&#x201d; at the root of the URL to a WAR file, and the WAR file is responsible for handling URL&#x2019;s in that namespace. For instance, this application will generate a WAR file named demosurvey.WAR. It includes a Servlet named HomeServlet (see edu.memphis.iis.demosurvey.HomeServlet) that is mapped to <tt>/home</tt>. As a result, if we are deployed on a server at <tt>www.somewhere.com</tt> the URL <tt>http://www.somewhere.com/demosurvey/home</tt> will map to our servlet.</p></div>
 <div class="section">
 <h2>A Quick Introduction to Maven<a name="A_Quick_Introduction_to_Maven"></a></h2>
 <p>This is not an extensive introduction to Maven. In fact, you should already by somewhat familiar with Maven (or at least have read some introductory material); however, in the interest of completeness, a brief overview of Maven will be given.</p>
@@ -278,7 +278,7 @@
   
 <li>If you&#x2019;re using the Maven site command to build an informational site for your project, the site.xml file and any extra content go in <tt>src/site</tt></li>
 </ul>
-<p>Maven also has a large plugin ecosystem for adding all kinds of functionality to your project. For instance, this project uses the Tomcat plugin. As a result, you can run this project in a special test Tomcat instance on your workstation just by running <tt>mvn tomcat7:run</tt>. However, please &#x201c;Setting Up Your Development Workstation&#x201d; below for real details. </p></div>
+<p>Maven also has a large plugin ecosystem for adding all kinds of functionality to your project. For instance, this project uses the Tomcat plugin. As a result, you can run this project in a special test Tomcat instance on your workstation just by running <tt>mvn tomcat7:run</tt>. However, please &#x201c;Setting Up Your Development Workstation&#x201d; below for real details.</p></div>
 <div class="section">
 <h2>Setting up your development workstation<a name="Setting_up_your_development_workstation"></a></h2>
 <p>As mentioned above you should have Git, a Java JDK (at least version 7), and Maven installed. You will probably want a nice IDE for development like Eclipse or NetBeans. A brief description of setting up an Eclipse development environment will be given, but all the &#x201c;raw&#x201d; Maven commands will be our focus.</p>
@@ -304,26 +304,34 @@ $ cd demo-survey
 $ mvn tomcat7:run
 </pre></div></div>
 <div class="section">
+<h2>Deploying the Documentation<a name="Deploying_the_Documentation"></a></h2>
+<p>To provide a complete example, this project uses a somewhat advanced technique. Maven is used to generate a local site, and that site is pushed to a special branch on GitHub where it is served as a GitHub Pages Project Page. In fact, that&#x2019;s what you&#x2019;re reading now.</p>
+<p>TODO: Maven site details</p>
+<p>TODO: GitHub pages overview</p>
+<p>TODO: how the script works</p></div>
+<div class="section">
+<h2>Deploying to AWS<a name="Deploying_to_AWS"></a></h2>
+<p>TODO: one-time setup - IAM role, DynamoDB role add, environment setup</p>
+<p>TODO: deploying latest build to AWS</p>
+<p>TODO: settings to consider in environment (T2.micro, mem settings)</p>
+<p>TODO: AWS step-by-step video</p></div>
+<div class="section">
+<h2>Design Walkthru<a name="Design_Walkthru"></a></h2>
+<p>TODO: document with Configuration, Data Overview, Logging, and Testing</p></div>
+<div class="section">
 <h2>Configuration<a name="Configuration"></a></h2>
 <p>TODO: (dev/test and production) TODO: IoC and why not used</p></div>
 <div class="section">
 <h2>Data Overview (including the model and DAO classes)<a name="Data_Overview_including_the_model_and_DAO_classes"></a></h2>
 <p>TODO: DynamoDB (and see also for local setup above)</p>
 <p>TODO: Model class and attributes used</p>
-<p>TODO: DAO class and how used </p></div>
-<div class="section">
-<h2>Design<a name="Design"></a></h2>
-<p>TODO: Servlet&#x2019;s and &#x201c;home-grown&#x201d; MVC</p></div>
+<p>TODO: DAO class and how used</p></div>
 <div class="section">
 <h2>Logging<a name="Logging"></a></h2>
 <p>TODO: basic logging, logback, and Beanstalk&#x2019;s change to Tomcat</p></div>
 <div class="section">
 <h2>Testing<a name="Testing"></a></h2>
 <p>TODO: unit testing</p></div>
-<div class="section">
-<h2>Deploying<a name="Deploying"></a></h2>
-<p>TODO: running for &#x201c;real&#x201d; on AWS: IAM role, DynamoDB role add, deploy application, settings to consider</p>
-<p>TODO: AWS step-by-step video</p></div>
                   </div>
             </div>
           </div>
