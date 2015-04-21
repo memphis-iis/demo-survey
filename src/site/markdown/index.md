@@ -1,7 +1,7 @@
 demo-survey
 ================
 
-Hello from a Windows VM!
+Hello from a Linux host!
 
 Simple Java web survey demo for the AWS platform
 
