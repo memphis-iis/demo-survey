@@ -19,7 +19,15 @@ cd "$SCRIPT_DIR"
 
 export WT="$SCRIPT_DIR/target/site"
 
-# Ensure we're on master - this shouldn't do anything
+# Make sure to pull in master
+git checkout master
+git pull
+
+# Ensure we've previously checked out gh-pages and are up to date
+git checkout gh-pages
+git pull
+
+# Ensure we're on master for reals - this shouldn't do anything
 git checkout master
 
 # Clean target directory and create the site
