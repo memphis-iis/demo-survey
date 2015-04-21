@@ -20,7 +20,7 @@ are silly. We only have a few high-level requirements:
   1. This project will be in Java, since that's a very common development
      language around here
   2. We should save survey results
-  3. We want our code to understand records with keys in some sense 
+  3. We want our code to understand records with keys in some sense
   4. We want to run this application in the "cloud" at Amazon Web Services (AWS)
 
 We will be making some assumptions about your development workstation
@@ -58,7 +58,7 @@ web server. This server can be a simple Servlet/JSP container (like Tomcat or
 Jetty), or it can be a full-fledged application server (like Wild Fly or
 GlassFish). In our case it will be Tomcat.
 
-Each WAR file is loaded as a web application (or context) and responds to 
+Each WAR file is loaded as a web application (or context) and responds to
 HTTP requests using Servlets. Servlets are generally classes that implement
 a special interface. Additionally, Java ServerPages (JSP's) can use a
 combination of HTML, Java code, and special "tags" to create HTML output.
@@ -75,10 +75,10 @@ your users should be able to download.
 In general, a Java web server maps each "directory" at the root of the URL
 to a WAR file, and the WAR file is responsible for handling URL's in that
 namespace. For instance, this application will generate a WAR file named
-demosurvey.WAR. It includes a Servlet named HomeServlet (see 
+demosurvey.WAR. It includes a Servlet named HomeServlet (see
 edu.memphis.iis.demosurvey.HomeServlet) that is mapped to `/home`. As a
 result, if we are deployed on a server at `www.somewhere.com` the URL
-`http://www.somewhere.com/demosurvey/home` will map to our servlet.       
+`http://www.somewhere.com/demosurvey/home` will map to our servlet.
 
 A Quick Introduction to Maven
 ------------------------------
@@ -126,13 +126,13 @@ Maven conventions. A few to keep in mind:
   * Any resources you need to run unit tests go in `src/test/resources`
   * If you're using the Maven site command to build an informational site
     for your project, the site.xml file and any extra content go in
-    `src/site` 
+    `src/site`
 
 Maven also has a large plugin ecosystem for adding all kinds of functionality
 to your project. For instance, this project uses the Tomcat plugin. As a
 result, you can run this project in a special test Tomcat instance on your
 workstation just by running `mvn tomcat7:run`. However, please "Setting
-Up Your Development Workstation" below for real details.    
+Up Your Development Workstation" below for real details.
 
 Setting up your development workstation
 ----------------------------------------
@@ -187,6 +187,37 @@ $ cd demo-survey
 $ mvn tomcat7:run
 ```
 
+Deploying the Documentation
+------------------------------
+
+To provide a complete example, this project uses a somewhat advanced technique.
+Maven is used to generate a local site, and that site is pushed to a special
+branch on GitHub where it is served as a GitHub Pages Project Page. In fact,
+that's what you're reading now.
+
+TODO: Maven site details
+
+TODO: GitHub pages overview
+
+TODO: how the script works
+
+
+Deploying to AWS
+------------------
+
+TODO: one-time setup - IAM role, DynamoDB role add, environment setup
+
+TODO: deploying latest build to AWS
+
+TODO: settings to consider in environment (T2.micro, mem settings)
+
+TODO: AWS step-by-step video
+
+
+Design Walkthru
+-----------------
+
+TODO: document with Configuration, Data Overview, Logging, and Testing
 
 Configuration
 --------------
@@ -201,12 +232,7 @@ TODO: DynamoDB (and see also for local setup above)
 
 TODO: Model class and attributes used
 
-TODO: DAO class and how used 
-
-Design
---------
-
-TODO: Servlet's and "home-grown" MVC
+TODO: DAO class and how used
 
 Logging
 --------
@@ -217,10 +243,3 @@ Testing
 --------
 
 TODO: unit testing
-
-Deploying
-----------
-
-TODO: running for "real" on AWS: IAM role, DynamoDB role add, deploy application, settings to consider
-
-TODO: AWS step-by-step video
