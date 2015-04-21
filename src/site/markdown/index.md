@@ -1,6 +1,8 @@
 demo-survey
 ================
 
+Hello from a Windows VM!
+
 Simple Java web survey demo for the AWS platform
 
 Be sure to look in `Project Reports` below for the JavaDocs!
