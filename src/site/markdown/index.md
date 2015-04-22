@@ -1,13 +1,17 @@
 demo-survey
 ================
 
-Simple Java web survey demo for the AWS platform
+Simple Java demo for the AWS platform to demonstrate `how to write to a database from a web application`.
+
+TODO: rebrand using above
 
 Be sure to look in `Project Reports` below for the JavaDocs!
 
 TODO: Links to meep-meep documents
 
 TODO: Break into separate documents
+
+TODO: Explain keys
 
 Introduction and Requirements
 ------------------------------

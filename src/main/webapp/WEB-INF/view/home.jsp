@@ -5,7 +5,7 @@
 
 <t:basepage>
 
-<jsp:attribute name="pagetitle">Survey Demo</jsp:attribute>
+<jsp:attribute name="pagetitle">Tell Us Stuff</jsp:attribute>
 
 <jsp:attribute name="head">
     <style>

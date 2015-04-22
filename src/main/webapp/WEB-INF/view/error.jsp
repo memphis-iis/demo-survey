@@ -7,6 +7,8 @@
     
 <jsp:attribute name="pagetitle">Survey Error</jsp:attribute>
 
+<jsp:attribute name="head"></jsp:attribute>
+
 <jsp:attribute name="scripts"></jsp:attribute>
 
 <jsp:body>
