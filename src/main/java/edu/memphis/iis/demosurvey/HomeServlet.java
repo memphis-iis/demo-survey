@@ -14,6 +14,10 @@ import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 
 //TODO: readme documentation
 
+//TODO: walkthru video
+
+//TODO: AWS setup video
+
 
 @WebServlet(value="/home", loadOnStartup=1)
 public class HomeServlet extends BaseServlet {
