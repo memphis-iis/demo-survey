@@ -1,20 +1,22 @@
 package edu.memphis.iis.demosurvey;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
@@ -38,10 +40,26 @@ import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
  * For this simple demo, we are just using some custom logic based on
  * system properties. See the pom.xml for how we set aws.dynamoEndpoint
  * for local Tomcat testing AND the AWS credential properties so that
- * our use of DefaultAWSCredentialsProviderChain works
+ * our use of DefaultAWSCredentialsProviderChain works.
+ *
+ *
  */
 public class DataStoreClient {
 	private final static Logger logger = LoggerFactory.getLogger(DataStoreClient.class);
+
+	/**
+	 * The list of tables that should be insured (created if missing) on
+	 * startup. Note that if there is a class in this array that isn't
+	 * annotated with @DynamoDBTable with tableName specified you WILL
+	 * get exceptions on startup).
+	 * */
+    private final static Class<?>[] TABLES = {Survey.class};
+
+    /** Default read capacity set for DynamoDB tables on creation */
+    private final static long DEFAULT_READ_CAPACITY = 2L;
+
+    /** Default write capacity set for DynamoDB tables on creation */
+    private final static long DEFAULT_WRITE_CAPACITY = 5L;
 
 	/** Created and managed by constructor */
 	private AmazonDynamoDBClient client;
@@ -101,27 +119,35 @@ public class DataStoreClient {
 	 * any previously created tables from that set, and then creates
 	 * any tables left over.
 	 */
-	public void ensureSchema() {
-		Set<String> tablesNeeded = new HashSet<>();
-		tablesNeeded.add("Survey");
+    public void ensureSchema() {
+		Map<String, Class<?>> tablesNeeded = new HashMap<>();
+
+		//Extract table names from table classes
+		for(Class<?> c: TABLES) {
+		    DynamoDBTable ann = (DynamoDBTable)c.getAnnotation(DynamoDBTable.class);
+		    tablesNeeded.put(ann.tableName(), c);
+		    logger.info("Table Configuration Found: " + ann.tableName());
+		}
 
 		for(Table t: getDB().listTables()) {
 			String tableName = t.getTableName();
-			logger.info("Table Found: " + tableName);
+			logger.info("Existing Table Found: " + tableName);
 			tablesNeeded.remove(tableName);
 		}
 
 		//Create any tables we didn't find
-		if (tablesNeeded.contains("Survey")) {
-			logger.info("CREATING Table: Survey");
+		for(String tableName: tablesNeeded.keySet()) {
+		    logger.info("CREATING Table: " + tableName);
 
-			db.createTable(getMapper()
-				.generateCreateTableRequest(Survey.class)
-				.withProvisionedThroughput(new ProvisionedThroughput()
-					.withReadCapacityUnits(2L)
-					.withWriteCapacityUnits(5L)
-				)
-			);
+		    Class<?> tableClass = tablesNeeded.get(tableName);
+
+		    db.createTable(getMapper()
+	            .generateCreateTableRequest(tableClass)
+                .withProvisionedThroughput(new ProvisionedThroughput()
+                    .withReadCapacityUnits(DEFAULT_READ_CAPACITY)
+                    .withWriteCapacityUnits(DEFAULT_WRITE_CAPACITY)
+                )
+            );
 		}
 	}
 
@@ -145,11 +171,10 @@ public class DataStoreClient {
 		}
 		else {
 		    //Throw an exception if the record already exists
-		    Map<String, ExpectedAttributeValue> expected = new HashMap<>();
-		    expected.put("participantCode", new ExpectedAttributeValue(false));
 		    getMapper().save(
 	            survey,
-	            new DynamoDBSaveExpression().withExpected(expected)
+	            new DynamoDBSaveExpression()
+	                .withExpected(expectKey(Survey.class))
 	        );
 		}
 	}
@@ -168,5 +193,42 @@ public class DataStoreClient {
             Survey.class,
             new DynamoDBScanExpression()
         );
+	}
+
+	/**
+	 * Given a "table" (the Class<?> for a class that is annotated with
+	 * DynamoDBTable), return the appropriate map. NOTE that if you don't
+	 * have a method annotated with DynamoDBHashKey and attributeName
+	 * specified, an exception will be thrown
+	 * @param table instance of Class<?>
+	 * @return a Map suitable for use as an Expected in a DynamoDBSaveExpression
+	 */
+	private Map<String, ExpectedAttributeValue> expectKey(Class<?> table) {
+	    String keyName = keyAttributeName(table);
+	    if (Utils.isBlankString(keyName)) {
+	        throw new IllegalArgumentException(table.getCanonicalName() + " has no DynamoDBHashKey specified");
+	    }
+
+	    Map<String, ExpectedAttributeValue> expected = new HashMap<>();
+        expected.put(keyName, new ExpectedAttributeValue(false));
+        return expected;
+	}
+
+	/**
+	 * Given a table (the Class<?> for a class that is annotated with
+     * DynamoDBTable), return the attribute name of the key to the table
+     * as specified by the DynamoDBHashKey annotation
+	 * @param table instance of Class<?> for a class annotated DynamoDBTable
+	 * @return the attribute name of the key for the table
+	 */
+	private String keyAttributeName(Class<?> table) {
+	    for(Method m: table.getMethods()) {
+	         Annotation keyAttr = m.getAnnotation(DynamoDBHashKey.class);
+	        if (keyAttr != null) {
+	            return ((DynamoDBHashKey)keyAttr).attributeName();
+	        }
+	    }
+
+	    return null; //Not found
 	}
 }
