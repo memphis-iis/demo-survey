@@ -24,7 +24,7 @@
 
         <menu name="Main Information">
             <item name="Introduction Overview" href="index.html" />
-            <item name="Design Walkthru" href="design.html" />
+            <item name="Design Walkthrough" href="design.html" />
         </menu>
         
         <menu ref="reports" />

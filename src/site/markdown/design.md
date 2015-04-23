@@ -1,5 +1,5 @@
-Design Walkthru
-================
+Design Walkthrough
+==================
 
 TODO: some intro
 
