@@ -42,7 +42,9 @@ import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
  * for local Tomcat testing AND the AWS credential properties so that
  * our use of DefaultAWSCredentialsProviderChain works.
  *
- *
+ * Note that this class supports auto-creation of all tables listed in
+ * the TABLES variable. It also supports automatic key checking (which
+ * we use in saveSurvey).
  */
 public class DataStoreClient {
 	private final static Logger logger = LoggerFactory.getLogger(DataStoreClient.class);
