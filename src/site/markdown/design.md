@@ -1,6 +1,8 @@
 Design Walkthrough
 ==================
 
+This project is introduced in 
+
 TODO: some intro
 
 Configuration
