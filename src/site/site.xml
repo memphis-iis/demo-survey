@@ -23,7 +23,7 @@
         </links>
 
         <menu name="Main Information">
-            <item name="Introduction Overview" href="index.html" />
+            <item name="Introduction and Overview" href="index.html" />
             <item name="Design Walkthrough" href="design.html" />
         </menu>
         
