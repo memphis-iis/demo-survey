@@ -104,7 +104,7 @@ material); however, in the interest of completeness, a brief overview of
 Maven will be given.
 
 Maven is a build tool with extensive support for transitive dependencies.
-For instance, if you declare a dependence on library A, which requireds
+For instance, if you declare a dependence on library A, which requires
 both libraries B and C, each of which required D, then Maven will
 automatically download all four libraries (A, B, C, and D) for your project.
 You may specify when you "need" your dependencies (only to compile, only
