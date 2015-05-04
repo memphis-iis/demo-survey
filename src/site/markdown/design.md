@@ -7,7 +7,7 @@ and how to set it up in
 
 However, just knowing that this a Java web application built with Maven doesn't
 necessarily tell you or why the application is structured in one way or another.
-Let's take a second and cover some of the major design points.  
+Let's take a second and cover some of the major design points.
 
 MVC
 ---
@@ -15,7 +15,7 @@ MVC
 This application is designed around a very lightweight implementation of the
 [Model-View-Controller] (http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller)
 pattern (also know by the initialism MVC . In essence, we build a "model"
-representing the entities our software is really interested in (in this case, 
+representing the entities our software is really interested in (in this case,
 a survey) and various "views" that we present to the user. Standing between
 these two pieces of functionality are our "controllers".
 
@@ -103,9 +103,9 @@ You can see that we also specify spurious values for the AWS Access Key ID
 and Secret Key. These are usually handled for you on Elastic Beanstalk, but
 we need to specify *something* for the local DynamoDB. ***Pro Tip:*** the
 key name TEST is used as part of the SQLite database named created by the
-Local DynamoDB. 
+Local DynamoDB.
 
-One final note on configuration: modern Java applications generally use a 
+One final note on configuration: modern Java applications generally use a
 development pattern called "Inversion of Control" and then configure the
 software components at runtime using another, similar pattern called
 "Dependency Injection" (often abbreviated IoC or DI). This particular
@@ -117,8 +117,8 @@ want to read Martin Fowler's article
 In our case, the class DataStoreClient might not continue to create its own
 instances of the classes. `AmazonDynamoDBClient`, `DynamoDB`, and
 `DynamoDBMapper`. In addition, the controllers (servlets) that just create
-a new instance of DataStoreClient would be "given" the instance to use.
-  
+a new instance of DataStoreClient would be "given" the instance to use. All of
+which brings us to the data design.
 
 Data Overview (including the model and DAO classes)
 -----------------------------------------------------------
@@ -140,4 +140,3 @@ Testing
 TODO: findbugs reports
 
 TODO: unit testing
-

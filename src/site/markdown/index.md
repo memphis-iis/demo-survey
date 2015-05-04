@@ -4,8 +4,8 @@ demo-survey
 This is a sample app demonstrating how to use Java and Amazon Web Services
 to create a web form whose results are saved to a database.
 
-In addition to this overview, there is also a 
-[brief design walkthru](design.html). You should also look in 
+In addition to this overview, there is also a
+[brief design walkthru](design.html). You should also look in
 [Project Reports](project-reports.html) for the JavaDocs and other goodies!
 
 TODO: Links to meep-meep documents
