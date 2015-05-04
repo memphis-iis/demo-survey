@@ -168,13 +168,13 @@ Any Java web server our application runs on will make sure that the load order
 for servlets is sorted by loadOnStartup. It will also insure that the `init`
 method on any servlet is called only once. The final result is that every time
 our application starts up, the first thing we do is check to ensure that the
-database is created.    
+database is created.
 
 Logging
 --------
 
 An important component to any application that will run on a server is how
-information will be logged. Currently we use the fairly standard 
+information will be logged. Currently we use the fairly standard
 [SLF4J](http://www.slf4j.org/) logging framework. You can get an excellent
 introduction via the succinct [SLF4J user manual](http://www.slf4j.org/manual.html).
 The basics are that you log to the SLF4J API and select a logging "backend"
@@ -209,7 +209,10 @@ In our case, we've added a [FindBugs](http://findbugs.sourceforge.net/)
 report via the [FindBugs Maven Plugin](http://gleclaire.github.io/findbugs-maven-plugin/).
 Although this may seem complicated, it's really quite simple. We added
 the FindBugs plugin to the `<reporting>` section and the report is
-included as part of our site generation.
+included as part of our site generation. We have helpfully left in code
+to flag a FindBugs message so that you can see an example of the kind
+of help it can provide. Of course, this is fairly mild example since we want
+the application to actually function!
 
 Interested readers may want to look at the list of Java static analysis tools
 at [this Wikipedia page](http://en.wikipedia.org/wiki/List_of_tools_for_static_code_analysis#Java).
