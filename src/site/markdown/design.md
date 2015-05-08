@@ -126,20 +126,107 @@ Data Overview
 
 
 
-TODO: DynamoDB (and see also for local setup above)
+Like most applications our handling of data begins with the model. In our case,
+that's the class `Survey`. In this situation, we begin with the assumption that
+we are always going to use Amazon DynamoDB for our data storage. As a result,
+we go ahead and annotate `Survey` to indicate the DynamoDB table we'll use,
+which attribute is the key (it's `participantCode`), name the other attributes,
+and specify attributes that should be ignored when loading or saving a survey
+(`isValid` shouldn't be written to the database).
 
-TODO: Model class and attributes used
+Our annotated model means that we can use the "high level" data model that
+Amazon provides for DynamoDB. The curious and industrious can find loads of
+details in the Amazon documentation
+[here](http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ORM.html).
 
-TODO: DAO class and how used
+However, we still need to answer a few questions:
+
+ 1. How will our initial database get created?
+ 2. Where will the code to read/write our data "live"?
+
+The initial answer to both questions is our `DataStoreClient` class. This class
+loosely follows the
+[Data Access Object pattern](http://en.wikipedia.org/wiki/Data_access_object)
+which is often referred to as "DAO". In the name of clarity, our DAO is fairly
+concrete. If for some reason you wanted to support multiple data backends, you
+would want multiple implementation of the `DataStoreClient`. Regardless, our
+DAO makes available three actions:
+
+ 1. `ensureSchema` which creates any missing tables
+ 2. `saveSurvey` which saves a single instance of `Survey`
+ 3. `findSurveys` which returns a `List` of the saved `Survey` instances.
+
+When and where the save/find method are called is fairly obvious and can be
+seen in the servlet/controller classes `HomeServlet` and `DataDumpServlet`.
+The slightly more mysterious method is for initially creating the database. It
+works via a combination of things:
+
+ 1. The static variable `TABLES` has a list of all DynamoDB-annotated "tables"
+    (which are just classes from our model) to be created.
+ 2. We call the method from the `init` method of the `HomeServlet` class
+ 3. We make sure that of all our servlets, the `loadOnStartup` attribute of
+    the `@WebServlet` annotation is the **lowest**.
+
+Any Java web server our application runs on will make sure that the load order
+for servlets is sorted by loadOnStartup. It will also insure that the `init`
+method on any servlet is called only once. The final result is that every time
+our application starts up, the first thing we do is check to ensure that the
+database is created.
 
 Logging
 --------
 
-TODO: basic logging, logback, and Beanstalk's change to Tomcat
+An important component to any application that will run on a server is how
+information will be logged. Currently we use the fairly standard
+[SLF4J](http://www.slf4j.org/) logging framework. You can get an excellent
+introduction via the succinct [SLF4J user manual](http://www.slf4j.org/manual.html).
+The basics are that you log to the SLF4J API and select a logging "backend"
+at runtime.
+
+In Elastic Beanstalk Java applications, the Tomcat server has been modified to
+use the `java.util.logging` log facilities, which SLF4J can use. For local
+testing, we use the excellent logback-classic library.
 
 Testing
 --------
 
-TODO: findbugs reports
+Like most application, we have included unit tests as a gentle introduction
+to jUnit. You'll note that Maven will automatically run the unit tests for
+you if you forget. They can also be run in the jUnit view in most IDE's
+(although only Eclipse has been tested).
 
-TODO: unit testing
+In attempt to keep the complexity low, no there aren't as many unit tests
+as there might be in a "real" application. For the sake of this demo, we
+are side-stepping the question of how to unit test views or controllers, and
+we haven't included any integration tests that might check our DAO classes.
+
+Static Analysis
+------------------
+
+Although a Java web application might seem complex, once you have all the
+various pieces together, it's fairly easy to add some impressive software
+engineering tools. As an example, we demonstrate how to add static analysis
+to your application.
+
+In our case, we've added a [FindBugs](http://findbugs.sourceforge.net/)
+report via the [FindBugs Maven Plugin](http://gleclaire.github.io/findbugs-maven-plugin/).
+Although this may seem complicated, it's really quite simple. We added
+the FindBugs plugin to the `<reporting>` section and the report is
+included as part of our site generation. We have helpfully left in code
+to flag a FindBugs message so that you can see an example of the kind
+of help it can provide. Of course, this is fairly mild example since we want
+the application to actually function!
+
+Interested readers may want to look at the list of Java static analysis tools
+at [this Wikipedia page](http://en.wikipedia.org/wiki/List_of_tools_for_static_code_analysis#Java).
+Of those listed, two very popular tools in industry are:
+[Checkstyle](https://maven.apache.org/plugins/maven-checkstyle-plugin/) and
+[PMD](http://www.javavillage.in/PMD-CPD-in-maven.php).
+
+Project Reports
+-------------------
+
+Be sure to check out the [Project Reports](project-reports.html) in the site
+generated. It includes the JavaDocs generated from the JavaDoc comments in
+the source code, the output from running the unit tests, the FindBugs report
+mentioned above and more.
