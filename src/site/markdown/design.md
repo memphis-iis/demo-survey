@@ -120,8 +120,11 @@ instances of the classes. `AmazonDynamoDBClient`, `DynamoDB`, and
 a new instance of DataStoreClient would be "given" the instance to use. All of
 which brings us to the data design.
 
-Data Overview (including the model and DAO classes)
------------------------------------------------------------
+Data Overview
+---------------
+
+
+
 
 TODO: DynamoDB (and see also for local setup above)
 
